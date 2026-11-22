@@ -64,8 +64,8 @@ def dinamika(t:int,z:list,powered:bool):
     dm = -MDOT if powered else 0.0
     return [vx,vy, ax, ay, dm]
 
-# PENTING: INGAT SEBELUMNYA BAHWA x,y,vx,vy, m = y
-# Maka y adalah list yang berisi [x,y,vx,vy,m]
+# PENTING: INGAT SEBELUMNYA BAHWA x,y,vx,vy, m = z
+# Maka z adalah list yang berisi [x,y,vx,vy,m]
 
 def cek_ground(t,y,powered):    # Ini fungsi yang pengen cek apakah roket mencapai tanah
     return y[1]                 # Karena y[1] adalah y, jika y = 0 maka roket mencapai tanah
