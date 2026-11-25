@@ -7,8 +7,8 @@ R_bumi = 6371000.0
 #ni nanti input, isi dulu karena vscode marah marah karena variabel ini gaada
 M_PROP = 300.0
 M_DRY = 200.0
-sudut_peluncuran = 85
-THRUST = 150000
+sudut_peluncuran = 85.0
+THRUST = 15000
 ISP = 250.0 # Impuls spesifik (s)
 diameter = 0.3 
 # Kumpulan rumus ig
@@ -16,6 +16,7 @@ area = np.pi * (diameter/2)**2
 MDOT = THRUST / (ISP * g0)   # Literally dm/dt yang nama lainnya M dot 
 T_pembakaran = M_PROP/MDOT
 M0 = M_PROP + M_DRY
+V_transisi = 30.0
 
 def atmosfer(h):
     h = max(h,0.0)
@@ -49,10 +50,13 @@ def koefisien_drag(mach):
 def dinamika(t:int,z:list,powered:bool):
     x,y,vx,vy,m = z
     v = np.sqrt(vx**2 + vy**2)
-    sudut =  np.radians(sudut_peluncuran)
+    if v>V_transisi:
+        ux, uy = vx/v, vy/v     # v berubah sesuai kecepatan, bukan sudut konstan
+    else:
+        sudut =  np.radians(sudut_peluncuran)
+        ux, uy = np.cos(sudut), np.sin(sudut)    # ux hasil dari cos sudut, uy hasil dari sin sudut
     thrust = THRUST if powered else 0.0
-    Fx, Fy = thrust*np.cos(sudut), thrust*np.sin(sudut) # Gaya sumbu x dan y
-
+    Fx, Fy = thrust*ux, thrust*uy # Gaya sumbu x dan y
     if v > 1e-6:
         rho,a = atmosfer(y)
         Fd = 0.5 * rho * v**2 * koefisien_drag(v/a) * area
